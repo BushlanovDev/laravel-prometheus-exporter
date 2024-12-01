@@ -1,0 +1,56 @@
+{
+    "name": "bushlanov-dev/laravel-prometheus-exporter",
+    "description": "Laravel prometheus exporter.",
+    "keywords": [
+        "exporter",
+        "laravel",
+        "lumen",
+        "prometheus"
+    ],
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksandr Bushlanov",
+            "email": "alex@bushlanov.dev"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0",
+        "illuminate/routing": "^9.0 || ^10.0 || ^11.0",
+        "promphp/prometheus_client_php": "^2.12"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "laravel/lumen-framework": "^9.0 || ^10.0 || ^11.0",
+        "phpunit/phpunit": "^9.0 || ^10.0 || ^11.0",
+        "mockery/mockery": "^1.6.12",
+        "phpstan/phpstan": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.65"
+    },
+    "autoload": {
+        "psr-4": {
+            "BushlanovDev\\LaravelPrometheusExporter\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "laravel": {
+        "providers": [
+            "BushlanovDev\\LaravelPrometheusExporter\\PrometheusServiceProvider"
+        ],
+        "aliases": {
+            "Prometheus": "BushlanovDev\\LaravelPrometheusExporter\\PrometheusFacade"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse -c phpstan.neon",
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes src",
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    }
+}
