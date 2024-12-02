@@ -1,6 +1,6 @@
 {
     "name": "bushlanov-dev/laravel-prometheus-exporter",
-    "description": "Laravel prometheus exporter.",
+    "description": "Laravel and Lumen prometheus exporter",
     "keywords": [
         "exporter",
         "laravel",
@@ -16,15 +16,15 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.0 || ^8.1 || ^8.2 || ^8.3",
         "illuminate/support": "^9.0 || ^10.0 || ^11.0",
         "illuminate/routing": "^9.0 || ^10.0 || ^11.0",
-        "promphp/prometheus_client_php": "^2.12"
+        "promphp/prometheus_client_php": "^2.13"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "laravel/lumen-framework": "^9.0 || ^10.0 || ^11.0",
-        "phpunit/phpunit": "^9.0 || ^10.0 || ^11.0",
+        "phpunit/phpunit": "^11.0",
         "mockery/mockery": "^1.6.12",
         "phpstan/phpstan": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.65"
