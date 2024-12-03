@@ -24,7 +24,7 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "laravel/lumen-framework": "^9.0 || ^10.0 || ^11.0",
-        "phpunit/phpunit": "^11.0",
+        "phpunit/phpunit": "^10.5",
         "mockery/mockery": "^1.6.12",
         "phpstan/phpstan": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.65"
