@@ -2,6 +2,9 @@
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/bushlanov-dev/laravel-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/bushlanov-dev/laravel-prometheus-exporter)
+[![PHP Version](https://img.shields.io/packagist/php-v/bushlanov-dev/laravel-prometheus-exporter.svg?style=flat-square)]()
+[![Laravel Version](https://img.shields.io/badge/Laravel-9.x,%2010.x,%2011.x-brightgreen.svg?style=flat-square)]()
+[![Lumen Version](https://img.shields.io/badge/Lumen-9.x,%2010.x,%2011.x-brightgreen.svg?style=flat-square)]()
 
 A prometheus exporter for the Laravel and the Lumen.
 
@@ -10,7 +13,7 @@ This package is a wrapper bridging [promphp/prometheus_client_php](https://githu
 ## Installation
 
 ```bash
-composer require digift-group/laravel-prometheus-exporter
+composer require bushlanov-dev/laravel-prometheus-exporter
 ```
 
 ### Laravel
@@ -20,7 +23,7 @@ Register the service provider in `config/app.php`
 ```php
 'providers' => [
     // ...
-    DigiftGroup\LaravelPrometheusExporter\PrometheusServiceProvider::class,
+    BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider::class,
 ];
 ```
 
@@ -29,14 +32,14 @@ Register the middleware in `app/Http/Kernel.php`
 ```php
 protected $routeMiddleware = [
     // ...
-    'prometheus' => DigiftGroup\LaravelPrometheusExporter\Middleware\PrometheusLaravelMiddleware::class,
+    'prometheus' => BushlanovDev\LaravelPrometheusExporter\Middleware\PrometheusLaravelMiddleware::class,
 ];
 ```
 
 Register metrics route.
 
 ```php
-Route::get('metrics', DigiftGroup\LaravelPrometheusExporter\Controllers\LaravelMetricsController::class . '@metrics');
+Route::get('metrics', BushlanovDev\LaravelPrometheusExporter\Controllers\LaravelMetricsController::class . '@metrics');
 ```
 
 Add middleware to routes. It is advisable to give names to all routes.
@@ -52,19 +55,19 @@ Route::get('/', function () {
 Register the service provider and middleware in `bootstrap/app.php`
 
 ```php
-$app->register(DigiftGroup\LaravelPrometheusExporter\PrometheusServiceProvider::class);
+$app->register(BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider::class);
 ```
 
 ```php
 $app->routeMiddleware([
-    'prometheus' => DigiftGroup\LaravelPrometheusExporter\Middleware\PrometheusLumenMiddleware::class,
+    'prometheus' => BushlanovDev\LaravelPrometheusExporter\Middleware\PrometheusLumenMiddleware::class,
 ]);
 ```
 
 Register metrics route
 
 ```php
-$app->router->group(['namespace' => 'DigiftGroup\LaravelPrometheusExporter\Controllers'], function ($router) {
+$app->router->group(['namespace' => 'BushlanovDev\LaravelPrometheusExporter\Controllers'], function ($router) {
     $router->get('metrics', ['as' => 'metrics', 'uses'=> 'LumenMetricsController' . '@metrics']);
 });
 ```
@@ -93,5 +96,5 @@ PROMETHEUS_REDIS_PREFIX=PROMETHEUS_
 To customize the configuration file, publish the package configuration using Artisan
 
 ```bash
-php artisan vendor:publish --provider="DigiftGroup\LaravelPrometheusExporter\PrometheusServiceProvider"
+php artisan vendor:publish --provider="BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider"
 ```

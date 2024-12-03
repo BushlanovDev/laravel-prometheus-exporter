@@ -29,7 +29,7 @@ class StorageAdapterFactoryTest extends TestCase
     public function testMakeRedisAdapter(): void
     {
         $factory = new StorageAdapterFactory();
-        $adapter = $factory->make('redis');
+        $adapter = $factory->make('redis', ['connection' => 'special', 'prefix' => 'app_']);
         $this->assertInstanceOf(Redis::class, $adapter);
     }
 
