@@ -1,10 +1,10 @@
 # Laravel and Lumen Prometheus Exporter
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/bushlanov-dev/laravel-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/bushlanov-dev/laravel-prometheus-exporter)
 [![PHP Version](https://img.shields.io/packagist/php-v/bushlanov-dev/laravel-prometheus-exporter.svg?style=flat-square)]()
 [![Laravel Version](https://img.shields.io/badge/Laravel-9.x,%2010.x,%2011.x-brightgreen.svg?style=flat-square)]()
 [![Lumen Version](https://img.shields.io/badge/Lumen-9.x,%2010.x,%2011.x-brightgreen.svg?style=flat-square)]()
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 A prometheus exporter for the Laravel and the Lumen.
 
@@ -80,7 +80,7 @@ $app->routeMiddleware([
 
 Register metrics route.
 ```php
-$app->router->group(['namespace' => 'BushlanovDev\LaravelPrometheusExporter\Controllers'], function ($router) {
+$app->router->group(['namespace' => '\BushlanovDev\LaravelPrometheusExporter\Controllers'], function ($router) {
     $router->get('metrics', ['as' => 'metrics', 'uses'=> 'LumenMetricsController' . '@metrics']);
 });
 ```
