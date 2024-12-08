@@ -93,11 +93,12 @@ $router->get('/', ['middleware' => 'prometheus', 'as' => 'route_name', function 
 ## Configuration
 
 The package has a default configuration which uses the following environment variables.
-```
+```environment
 PROMETHEUS_NAMESPACE=app
 PROMETHEUS_STORAGE_ADAPTER=redis
 PROMETHEUS_REDIS_HOST=localhost
 PROMETHEUS_REDIS_PORT=6379
+PROMETHEUS_REDIS_DATABASE=0
 PROMETHEUS_REDIS_TIMEOUT=0.1
 PROMETHEUS_REDIS_READ_TIMEOUT=10
 PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS=0
@@ -107,4 +108,14 @@ PROMETHEUS_REDIS_PREFIX=PROMETHEUS_
 To customize the configuration file, publish the package configuration using Artisan.
 ```bash
 php artisan vendor:publish --provider="BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider"
+```
+
+### Protect metrics endpoint
+
+If you need to prevent others from accessing your /metrics routes, you can enable the corresponding setting. 
+Currently, only basic_auth is supported to secure your metrics endpoint.
+```environment
+PROMETHEUS_ROUTE_AUTH_ENABLED=true
+PROMETHEUS_ROUTE_AUTH_USERNAME=username
+PROMETHEUS_ROUTE_AUTH_PASSWORD=password
 ```

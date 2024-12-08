@@ -7,6 +7,7 @@ namespace Tests;
 use BushlanovDev\LaravelPrometheusExporter\Controllers\LaravelMetricsController;
 use BushlanovDev\LaravelPrometheusExporter\Controllers\LumenMetricsController;
 use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\ResponseFactory as ResponseFactoryLaravel;
 use Laravel\Lumen\Http\ResponseFactory as ResponseFactoryLumen;
@@ -22,7 +23,9 @@ class MetricsControllerTest extends TestCase
         $exporter = Mockery::mock(PrometheusExporter::class);
         $controller = new LaravelMetricsController($responseFactory, $exporter);
 
+        $mockRequest = Mockery::mock(Request::class);
         $mockResponse = Mockery::mock(Response::class);
+
         $responseFactory->shouldReceive('make')
             ->once()
             ->withArgs(["\n", 200, ['Content-Type' => RenderTextFormat::MIME_TYPE]])
@@ -32,7 +35,7 @@ class MetricsControllerTest extends TestCase
             ->once()
             ->andReturn([]);
 
-        $actualResponse = $controller->metrics();
+        $actualResponse = $controller->metrics($mockRequest);
         $this->assertSame($mockResponse, $actualResponse);
     }
 
@@ -42,7 +45,9 @@ class MetricsControllerTest extends TestCase
         $exporter = Mockery::mock(PrometheusExporter::class);
         $controller = new LumenMetricsController($responseFactory, $exporter);
 
+        $mockRequest = Mockery::mock(Request::class);
         $mockResponse = Mockery::mock(Response::class);
+
         $responseFactory->shouldReceive('make')
             ->once()
             ->withArgs(["\n", 200, ['Content-Type' => RenderTextFormat::MIME_TYPE]])
@@ -52,7 +57,7 @@ class MetricsControllerTest extends TestCase
             ->once()
             ->andReturn([]);
 
-        $actualResponse = $controller->metrics();
+        $actualResponse = $controller->metrics($mockRequest);
         $this->assertSame($mockResponse, $actualResponse);
     }
 }

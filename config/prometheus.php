@@ -76,4 +76,24 @@ return [
     */
 
     'routes_buckets' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Protect metrics endpoint
+    |--------------------------------------------------------------------------
+    |
+    | If you need to prevent others from accessing your /metrics routes,
+    | you can enable the corresponding setting.
+    | Currently, only basic_auth is supported to secure your metrics endpoint.
+    |
+    */
+
+    'metrics_route_auth' => [
+        'enabled' => env('PROMETHEUS_ROUTE_AUTH_ENABLED', false),
+        'basic_auth' => [
+            'username' => env('PROMETHEUS_ROUTE_AUTH_USERNAME'),
+            'password' => env('PROMETHEUS_ROUTE_AUTH_PASSWORD'),
+        ],
+    ],
+
 ];
