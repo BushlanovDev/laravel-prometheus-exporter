@@ -18,7 +18,7 @@ composer require bushlanov-dev/laravel-prometheus-exporter
 
 ### Laravel
 
-Laravel 11+ register the service provider in `bootstrap/providers.php`.
+Laravel 11+ register the service provider in `bootstrap/providers.php`:
 ```php
 return [
     // ...
@@ -26,8 +26,7 @@ return [
 ];
 ```
 
-Old versions of laravel register the service provider in `config/app.php`.
-
+Old versions of laravel register the service provider in `config/app.php`:
 ```php
 'providers' => [
     // ...
@@ -35,7 +34,7 @@ Old versions of laravel register the service provider in `config/app.php`.
 ];
 ```
 
-Laravel 11+ register the middleware in `bootstrap/app.php`.
+Laravel 11+ register the middleware in `bootstrap/app.php`:
 ```php
 // ...
 ->withMiddleware(function (Middleware $middleware) {
@@ -45,7 +44,7 @@ Laravel 11+ register the middleware in `bootstrap/app.php`.
 })
 ```
 
-Old versions of laravel register the middleware in `app/Http/Kernel.php`.
+Old versions of laravel register the middleware in `app/Http/Kernel.php`:
 ```php
 protected $routeMiddleware = [
     // ...
@@ -53,13 +52,12 @@ protected $routeMiddleware = [
 ];
 ```
 
-Register metrics route `routes/web.php`.
+Register metrics route `routes/web.php`:
 ```php
 Route::get('metrics', [BushlanovDev\LaravelPrometheusExporter\Controllers\LaravelMetricsController::class, 'metrics']);
 ```
 
-Add middleware to routes. It is advisable to give names to all routes.
-
+Add middleware to routes. It is advisable to give names to all routes:
 ```php
 Route::get('/', function () {
 // ...
@@ -68,7 +66,7 @@ Route::get('/', function () {
 
 ### Lumen
 
-Register the service provider and middleware in `bootstrap/app.php`.
+Register the service provider and middleware in `bootstrap/app.php`:
 ```php
 $app->register(BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider::class);
 ```
@@ -79,16 +77,32 @@ $app->routeMiddleware([
 ]);
 ```
 
-Register metrics route.
+Register metrics route:
 ```php
 $app->router->group(['namespace' => '\BushlanovDev\LaravelPrometheusExporter\Controllers'], function ($router) {
     $router->get('metrics', ['as' => 'metrics', 'uses'=> 'LumenMetricsController' . '@metrics']);
 });
 ```
 
-Add middleware to routes. It is advisable to give names to all routes.
+Add middleware to routes. It is advisable to give names to all routes:
 ```php
 $router->get('/', ['middleware' => 'prometheus', 'as' => 'route_name', function () use ($router) {/*...*/}]);
+```
+
+## Guzzle metrics
+
+To observe Guzzle metrics, you should register the following provider:
+```php
+BushlanovDev\LaravelPrometheusExporter\Providers\GuzzleServiceProvider::class
+```
+
+And register the middleware for Http facade or Guzzle client:
+```php
+Http::globalMiddleware(function ($handler) {
+    return $this->app['prometheus.guzzle.middleware']($handler);
+});
+
+$this->app->alias('prometheus.guzzle.client', Client::class);
 ```
 
 ## Configuration
@@ -106,7 +120,7 @@ PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS=0
 PROMETHEUS_REDIS_PREFIX=PROMETHEUS_
 ```
 
-To customize the configuration file, publish the package configuration using Artisan.
+To customize the configuration file, publish the package configuration using Artisan:
 ```bash
 php artisan vendor:publish --provider="BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider"
 ```
