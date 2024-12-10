@@ -22,15 +22,16 @@ Laravel 11+ register the service provider in `bootstrap/providers.php`.
 ```php
 return [
     // ...
-    BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider::class,
+    BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider::class,
 ];
 ```
 
 Old versions of laravel register the service provider in `config/app.php`.
+
 ```php
 'providers' => [
     // ...
-    BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider::class,
+    BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider::class,
 ];
 ```
 
@@ -69,7 +70,7 @@ Route::get('/', function () {
 
 Register the service provider and middleware in `bootstrap/app.php`.
 ```php
-$app->register(BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider::class);
+$app->register(BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider::class);
 ```
 
 ```php
@@ -107,7 +108,7 @@ PROMETHEUS_REDIS_PREFIX=PROMETHEUS_
 
 To customize the configuration file, publish the package configuration using Artisan.
 ```bash
-php artisan vendor:publish --provider="BushlanovDev\LaravelPrometheusExporter\PrometheusServiceProvider"
+php artisan vendor:publish --provider="BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider"
 ```
 
 ### Protect metrics endpoint

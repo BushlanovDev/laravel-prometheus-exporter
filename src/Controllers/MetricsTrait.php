@@ -22,7 +22,7 @@ trait MetricsTrait
             return $this->responseFactory->make(
                 'Unauthorized.',
                 Response::HTTP_UNAUTHORIZED,
-                ['Content-Type' => RenderTextFormat::MIME_TYPE]
+                ['Content-Type' => RenderTextFormat::MIME_TYPE],
             );
         }
 

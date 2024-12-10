@@ -41,7 +41,7 @@
     },
     "laravel": {
         "providers": [
-            "BushlanovDev\\LaravelPrometheusExporter\\PrometheusServiceProvider"
+            "BushlanovDev\\LaravelPrometheusExporter\\Providers\\PrometheusServiceProvider"
         ],
         "aliases": {
             "Prometheus": "BushlanovDev\\LaravelPrometheusExporter\\PrometheusFacade"

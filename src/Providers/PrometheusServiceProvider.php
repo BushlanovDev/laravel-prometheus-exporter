@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BushlanovDev\LaravelPrometheusExporter;
+namespace BushlanovDev\LaravelPrometheusExporter\Providers;
 
+use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
+use BushlanovDev\LaravelPrometheusExporter\StorageAdapterFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Prometheus\CollectorRegistry;
@@ -19,7 +21,7 @@ class PrometheusServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/prometheus.php' => $this->app->configPath('prometheus.php'),
+            __DIR__ . '/../../config/prometheus.php' => $this->app->configPath('prometheus.php'),
         ]);
     }
 
@@ -30,7 +32,7 @@ class PrometheusServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/prometheus.php', 'prometheus');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/prometheus.php', 'prometheus');
 
         $this->app->singleton(PrometheusExporter::class, function ($app) {
             $adapter = $app['prometheus.storage_adapter'];
