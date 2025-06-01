@@ -215,7 +215,7 @@ class PrometheusExporter
      * @throws \Prometheus\Exception\MetricsRegistrationException
      * @see https://prometheus.io/docs/concepts/metric_types/#histogram
      */
-    public function registerHistogram(string $name, string $help, array $labels = [], array $buckets = null): Histogram
+    public function registerHistogram(string $name, string $help, array $labels = [], ?array $buckets = null): Histogram
     {
         return $this->prometheus->registerHistogram($this->namespace, $name, $help, $labels, $buckets);
     }
@@ -250,7 +250,7 @@ class PrometheusExporter
         string $name,
         string $help,
         array $labels = [],
-        array $buckets = null
+        ?array $buckets = null
     ): Histogram {
         return $this->prometheus->getOrRegisterHistogram($this->namespace, $name, $help, $labels, $buckets);
     }
