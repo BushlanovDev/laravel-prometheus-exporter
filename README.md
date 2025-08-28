@@ -1,7 +1,7 @@
 # Laravel and Lumen Prometheus Exporter
 
 [![Actions status](https://github.com/BushlanovDev/laravel-prometheus-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/BushlanovDev/laravel-prometheus-exporter/actions)
-[![Coverage](https://raw.githubusercontent.com/BushlanovDev/laravel-prometheus-exporter/refs/heads/master/.github/badge-coverage.svg?v=2)](https://github.com/BushlanovDev/laravel-prometheus-exporter/actions)
+[![Coverage](https://raw.githubusercontent.com/BushlanovDev/laravel-prometheus-exporter/refs/heads/main/.github/badge-coverage.svg?v=1)](https://github.com/BushlanovDev/laravel-prometheus-exporter/actions)
 [![Packagist Version](https://img.shields.io/packagist/v/bushlanov-dev/laravel-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/bushlanov-dev/laravel-prometheus-exporter)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg?style=flat-square)]()
 [![Laravel Version](https://img.shields.io/badge/Laravel-9.x,%2010.x,%2011.x,%2012.x-brightgreen.svg?style=flat-square)]()
