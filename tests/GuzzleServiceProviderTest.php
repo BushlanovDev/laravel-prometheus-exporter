@@ -45,7 +45,7 @@ class GuzzleServiceProviderTest extends TestCase
                 'guzzle_response_duration',
                 'Guzzle response duration histogram',
                 ['method', 'external_endpoint', 'status_code'],
-                [0.1, 0.5, 1.0]
+                [0.1, 0.5, 1.0],
             )
             ->andReturn($histogramMock);
 
@@ -73,5 +73,15 @@ class GuzzleServiceProviderTest extends TestCase
         $client = $this->app->make('prometheus.guzzle.client');
         $this->assertInstanceOf(Client::class, $client);
         $this->assertSame($stack, $client->getConfig('handler'));
+
+        $provides = [
+            'prometheus.guzzle.client',
+            'prometheus.guzzle.handler-stack',
+            'prometheus.guzzle.middleware',
+            'prometheus.guzzle.handler',
+            'prometheus.guzzle.client.histogram',
+        ];
+
+        $this->assertSame($this->app->getProvider(GuzzleServiceProvider::class)->provides(), $provides);
     }
 }
