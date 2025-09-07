@@ -37,8 +37,10 @@ class StorageAdapterFactory
                 return $this->makeRedisAdapter($config);
             case 'apc':
                 return new APC();
+            // @codeCoverageIgnoreStart
             case 'apcng':
                 return new APCng();
+            // @codeCoverageIgnoreEnd
         }
 
         throw new InvalidArgumentException("The driver $driver is not supported.");
