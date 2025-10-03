@@ -136,3 +136,7 @@ PROMETHEUS_ROUTE_AUTH_ENABLED=true
 PROMETHEUS_ROUTE_AUTH_USERNAME=username
 PROMETHEUS_ROUTE_AUTH_PASSWORD=password
 ```
+
+## License
+
+This repository's source code is available under the [MIT License](LICENSE).
