@@ -21,6 +21,10 @@ class StorageAdapterFactoryTest extends TestCase
 
     public function testMakeApcAdapter(): void
     {
+        if (!extension_loaded('apcu')) {
+            $this->markTestSkipped('The apcu extension is not available.');
+        }
+
         $factory = new StorageAdapterFactory();
         $adapter = $factory->make('apc');
         $this->assertInstanceOf(APC::class, $adapter);
@@ -28,6 +32,10 @@ class StorageAdapterFactoryTest extends TestCase
 
     public function testMakeRedisAdapter(): void
     {
+        if (!extension_loaded('redis')) {
+            $this->markTestSkipped('The redis extension is not available.');
+        }
+
         $factory = new StorageAdapterFactory();
         $adapter = $factory->make('redis', ['connection' => 'special', 'prefix' => 'app_']);
         $this->assertInstanceOf(Redis::class, $adapter);

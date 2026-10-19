@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\ResponseFactory as ResponseFactoryLaravel;
 use Laravel\Lumen\Http\ResponseFactory as ResponseFactoryLumen;
 use Mockery;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Prometheus\RenderTextFormat;
 
@@ -39,6 +40,7 @@ class MetricsControllerTest extends TestCase
         $this->assertSame($mockResponse, $actualResponse);
     }
 
+    #[Group('lumen')]
     public function testLumenMetrics(): void
     {
         $responseFactory = Mockery::mock(ResponseFactoryLumen::class);

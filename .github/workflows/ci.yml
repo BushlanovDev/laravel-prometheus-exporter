@@ -20,7 +20,7 @@ jobs:
           coverage: none
 
       - name: Install composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer update --prefer-dist --no-interaction
 
       - name: Run Static Analysis
         run: ./vendor/bin/phpstan analyse -c phpstan.neon --error-format=github
@@ -28,10 +28,25 @@ jobs:
   tests:
 
     runs-on: ubuntu-latest
+    name: Laravel ${{ matrix.laravel }} / PHP ${{ matrix.php }}${{ matrix.dependencies && ' (lowest)' || '' }} Test on ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        php-versions: [ "8.1", "8.2", "8.3", "8.4", "8.5" ]
-    name: PHP ${{ matrix.php-versions }} Test on ubuntu-latest
+        include:
+          - { laravel: 10, php: "8.1" }
+          - { laravel: 10, php: "8.2" }
+          - { laravel: 10, php: "8.3" }
+          - { laravel: 11, php: "8.2" }
+          - { laravel: 11, php: "8.3" }
+          - { laravel: 11, php: "8.4" }
+          - { laravel: 11, php: "8.2", dependencies: lowest }
+          - { laravel: 12, php: "8.2" }
+          - { laravel: 12, php: "8.3" }
+          - { laravel: 12, php: "8.4" }
+          - { laravel: 12, php: "8.5" }
+          - { laravel: 13, php: "8.3" }
+          - { laravel: 13, php: "8.4" }
+          - { laravel: 13, php: "8.5" }
 
     steps:
       - name: Checkout
@@ -40,18 +55,29 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ matrix.php }}
           extensions: xdebug, redis, apcu
           ini-values: "apc.enable_cli=1"
           coverage: xdebug
 
+      - name: Pin Laravel version
+        run: composer require "illuminate/support:^${{ matrix.laravel }}" "illuminate/routing:^${{ matrix.laravel }}" --no-update --no-interaction
+
+      - name: Remove Lumen framework
+        if: matrix.laravel >= 12
+        run: composer remove --dev laravel/lumen-framework --no-update --no-interaction
+
       - name: Install composer dependencies
         run: |
-          if [[ "${{ matrix.php-versions }}" == "8.5" ]]; then
-            composer install --prefer-dist --no-interaction --ignore-platform-req=php
-          else
-            composer install --prefer-dist --no-interaction
-          fi
+          EXTRA=""
+          if [[ "${{ matrix.php }}" == "8.5" ]]; then EXTRA="--ignore-platform-req=php"; fi
+          if [[ "${{ matrix.dependencies }}" == "lowest" ]]; then EXTRA="$EXTRA --prefer-lowest"; fi
+          composer update --prefer-dist --no-interaction $EXTRA
 
       - name: PHPUnit
-        run: ./vendor/bin/phpunit --configuration=phpunit.xml --coverage-text
+        run: |
+          if [[ "${{ matrix.laravel }}" -ge 12 ]]; then
+            ./vendor/bin/phpunit --configuration=phpunit.xml --coverage-text --exclude-group lumen
+          else
+            ./vendor/bin/phpunit --configuration=phpunit.xml --coverage-text
+          fi
