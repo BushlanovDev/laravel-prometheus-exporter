@@ -58,6 +58,10 @@ class StorageAdapterFactoryTest extends TestCase
             $this->markTestSkipped('The redis extension is not available.');
         }
 
+        if (!class_exists(PHPRedis::class)) {
+            $this->markTestSkipped('The installed prometheus client does not expose the PHPRedis storage client.');
+        }
+
         $factory = new StorageAdapterFactory();
 
         $disabled = $factory->make('redis', ['persistent_connections' => '0', 'prefix' => 'app_']);
