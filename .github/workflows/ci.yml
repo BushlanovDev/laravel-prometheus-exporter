@@ -76,7 +76,7 @@ jobs:
         run: |
           composer config policy.advisories.block false
           EXTRA=""
-#          if [[ "${{ matrix.php }}" == "8.5" ]]; then EXTRA="--ignore-platform-req=php"; fi
+          if [[ "${{ matrix.php }}" == "8.5" ]]; then EXTRA="--ignore-platform-req=php"; fi
           if [[ "${{ matrix.dependencies }}" == "lowest" ]]; then EXTRA="$EXTRA --prefer-lowest"; fi
           composer update --prefer-dist --no-interaction $EXTRA
 
