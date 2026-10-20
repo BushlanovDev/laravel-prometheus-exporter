@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use BushlanovDev\LaravelPrometheusExporter\CollectorInterface;
 use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
 use BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider;
 use BushlanovDev\LaravelPrometheusExporter\StorageAdapterFactory;
@@ -98,5 +99,41 @@ class PrometheusServiceProviderTest extends TestCase
         $provides = $provider->provides();
 
         $this->assertEquals($expected, $provides);
+    }
+
+    public function testRegistersCollectorsFromConfig(): void
+    {
+        config()->set('prometheus.collectors', [ConfigTestCollector::class]);
+
+        $exporter = $this->app->make('prometheus');
+
+        $this->assertArrayHasKey('config_test_collector', $exporter->getCollectors());
+        $this->assertSame($exporter, $this->app->make('prometheus'));
+    }
+
+    public function testThrowsOnInvalidCollectorClassInConfig(): void
+    {
+        config()->set('prometheus.collectors', [\stdClass::class]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('must implement');
+
+        $this->app->make('prometheus');
+    }
+}
+
+class ConfigTestCollector implements CollectorInterface
+{
+    public function getName(): string
+    {
+        return 'config_test_collector';
+    }
+
+    public function registerMetrics(PrometheusExporter $exporter): void
+    {
+    }
+
+    public function collect(): void
+    {
     }
 }

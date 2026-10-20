@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace BushlanovDev\LaravelPrometheusExporter\Providers;
 
+use BushlanovDev\LaravelPrometheusExporter\CollectorInterface;
 use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
 use BushlanovDev\LaravelPrometheusExporter\StorageAdapterFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
+use InvalidArgumentException;
 use Prometheus\CollectorRegistry;
 use Prometheus\Storage\Adapter;
 
@@ -38,7 +40,22 @@ class PrometheusServiceProvider extends ServiceProvider
             $adapter = $app['prometheus.storage_adapter'];
             $prometheus = new CollectorRegistry($adapter);
 
-            return new PrometheusExporter(config('prometheus.namespace'), $prometheus);
+            $collectors = [];
+            foreach ((array)config('prometheus.collectors', []) as $collectorClass) {
+                if (!is_string($collectorClass) || !is_a($collectorClass, CollectorInterface::class, true)) {
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            'The collector "%s" must implement "%s".',
+                            is_string($collectorClass) ? $collectorClass : get_debug_type($collectorClass),
+                            CollectorInterface::class
+                        )
+                    );
+                }
+
+                $collectors[] = $app->make($collectorClass);
+            }
+
+            return new PrometheusExporter(config('prometheus.namespace'), $prometheus, $collectors);
         });
         $this->app->alias(PrometheusExporter::class, 'prometheus');
 

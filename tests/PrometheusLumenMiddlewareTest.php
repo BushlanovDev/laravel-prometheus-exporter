@@ -9,7 +9,6 @@ use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
 use BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Route as RouteFacade;
 use Mockery;
 use Orchestra\Testbench\TestCase;
 use Prometheus\Counter;
@@ -46,18 +45,9 @@ class PrometheusLumenMiddlewareTest extends TestCase
 
         $this->app->instance('prometheus', $exporter);
 
-        RouteFacade::shouldReceive('getRoutes')
-            ->once()
-            ->andReturn([
-                [
-                    'method' => 'GET',
-                    'uri' => '/test',
-                    'action' => ['as' => 'test.lumen.route', 'uses' => fn() => new Response('OK')],
-                ],
-            ]);
-
         $middleware = new PrometheusLumenMiddleware();
         $request = Request::create('/test', 'GET');
+        $request->setRouteResolver(fn() => [1, ['as' => 'test.lumen.route', 'uses' => fn() => new Response('OK')], []]);
         $next = fn() => new Response('OK', 200);
 
         $response = $middleware->handle($request, $next);
@@ -68,10 +58,10 @@ class PrometheusLumenMiddlewareTest extends TestCase
     public function testHandleUsesUriAsFallbackWhenRouteHasNoName(): void
     {
         $histogram = Mockery::mock(Histogram::class);
-        $histogram->shouldReceive('observe')->once()->with(Mockery::type('float'), ['POST', 'test-no-name', '201']);
+        $histogram->shouldReceive('observe')->once()->with(Mockery::type('float'), ['POST', '/test-no-name', '201']);
 
         $counter = Mockery::mock(Counter::class);
-        $counter->shouldReceive('inc')->once()->with(['POST', 'test-no-name', '201']);
+        $counter->shouldReceive('inc')->once()->with(['POST', '/test-no-name', '201']);
 
         $exporter = Mockery::mock(PrometheusExporter::class);
         $exporter->shouldReceive('getOrRegisterHistogram')->andReturn($histogram);
@@ -79,18 +69,9 @@ class PrometheusLumenMiddlewareTest extends TestCase
 
         $this->app->instance('prometheus', $exporter);
 
-        RouteFacade::shouldReceive('getRoutes')
-            ->once()
-            ->andReturn([
-                [
-                    'method' => 'POST',
-                    'uri' => '/test-no-name',
-                    'action' => ['uses' => fn() => new Response('Created', 201)],
-                ],
-            ]);
-
         $middleware = new PrometheusLumenMiddleware();
         $request = Request::create('/test-no-name', 'POST');
+        $request->setRouteResolver(fn() => [1, ['uses' => fn() => new Response('Created', 201)], []]);
         $next = fn() => new Response('Created', 201);
 
         $response = $middleware->handle($request, $next);

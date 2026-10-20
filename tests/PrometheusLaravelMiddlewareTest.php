@@ -8,6 +8,7 @@ use BushlanovDev\LaravelPrometheusExporter\Middleware\PrometheusLaravelMiddlewar
 use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Mockery;
 use Orchestra\Testbench\TestCase;
@@ -70,6 +71,7 @@ class PrometheusLaravelMiddlewareTest extends TestCase
 
         $middleware = new PrometheusLaravelMiddleware();
         $request = Request::create('/test', 'GET');
+        $request->setRouteResolver(fn() => RouteFacade::getRoutes()->match($request));
         $next = fn() => new Response('OK', 200);
 
         $response = $middleware->handle($request, $next);
@@ -103,10 +105,42 @@ class PrometheusLaravelMiddlewareTest extends TestCase
 
         $middleware = new PrometheusLaravelMiddleware();
         $request = Request::create('/test-no-name', 'POST');
+        $request->setRouteResolver(fn() => RouteFacade::getRoutes()->match($request));
         $next = fn() => new Response('Created', 201);
 
         $response = $middleware->handle($request, $next);
 
         $this->assertEquals(201, $response->getStatusCode());
+    }
+
+    public function testHandleUsesBoundRouteWithoutRematching(): void
+    {
+        $histogram = Mockery::mock(Histogram::class);
+        $histogram->shouldReceive('observe')
+            ->once()
+            ->with(
+                Mockery::type('float'),
+                ['GET', 'bound-route-uri', '200'],
+            );
+
+        $counter = Mockery::mock(Counter::class);
+        $counter->shouldReceive('inc')
+            ->once()
+            ->with(['GET', 'bound-route-uri', '200']);
+
+        $exporter = Mockery::mock(PrometheusExporter::class);
+        $exporter->shouldReceive('getOrRegisterHistogram')->andReturn($histogram);
+        $exporter->shouldReceive('getOrRegisterCounter')->andReturn($counter);
+
+        $this->app->instance('prometheus', $exporter);
+
+        $middleware = new PrometheusLaravelMiddleware();
+        $request = Request::create('/test', 'GET');
+        $request->setRouteResolver(fn() => new Route(['GET'], 'bound-route-uri', []));
+        $next = fn() => new Response('OK', 200);
+
+        $response = $middleware->handle($request, $next);
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }

@@ -122,6 +122,29 @@ class MetricsTraitTest extends TestCase
             $_ENV['APP_ENV'] = $originalEnv;
         }
     }
+
+    public function testMetricsReturnsSuccessWhenAuthIsEnabledAsStringZero(): void
+    {
+        $originalEnv = $_ENV['APP_ENV'] ?? 'testing';
+        $_ENV['APP_ENV'] = 'production';
+
+        try {
+            config()->set('prometheus.metrics_route_auth.enabled', '0');
+
+            $this->exporter->shouldReceive('export')->once()->andReturn([]);
+            $this->responseFactory
+                ->shouldReceive('make')
+                ->once()
+                ->with("\n", Response::HTTP_OK, ['Content-Type' => RenderTextFormat::MIME_TYPE])
+                ->andReturn($this->mockResponse);
+
+            $response = $this->controller->metrics(new Request());
+
+            $this->assertSame($this->mockResponse, $response);
+        } finally {
+            $_ENV['APP_ENV'] = $originalEnv;
+        }
+    }
 }
 
 class ConcreteControllerWithMetricsTrait

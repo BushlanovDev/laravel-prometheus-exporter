@@ -6,19 +6,22 @@ namespace BushlanovDev\LaravelPrometheusExporter\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Route as RouteFacade;
 
 class PrometheusLaravelMiddleware extends PrometheusMiddlewareAbstract
 {
     /**
      * @param Request $request
      *
-     * @return Route
+     * @return string
      */
-    public function getMatchedRoute(Request $request): Route
+    protected function getRouteLabel(Request $request): string
     {
-        $routeCollection = RouteFacade::getRoutes();
+        $route = $request->route();
 
-        return $routeCollection->match($request);
+        if ($route instanceof Route) {
+            return $route->getName() ?? $route->uri();
+        }
+
+        return $request->getPathInfo();
     }
 }

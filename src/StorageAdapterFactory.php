@@ -64,6 +64,11 @@ class StorageAdapterFactory
             Redis::setPrefix($prefix);
         }
 
+        $config['persistent_connections'] = filter_var(
+            $config['persistent_connections'] ?? false,
+            FILTER_VALIDATE_BOOLEAN,
+        );
+
         return new Redis($config);
     }
 }

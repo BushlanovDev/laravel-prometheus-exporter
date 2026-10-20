@@ -40,7 +40,7 @@ trait MetricsTrait
      */
     private function isAuthenticated(Request $request): bool
     {
-        if (env('APP_ENV') === 'testing' || !config('prometheus.metrics_route_auth.enabled')) {
+        if (env('APP_ENV') === 'testing' || !filter_var(config('prometheus.metrics_route_auth.enabled'), FILTER_VALIDATE_BOOLEAN)) {
             return true;
         }
 

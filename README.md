@@ -20,6 +20,9 @@ composer require bushlanov-dev/laravel-prometheus-exporter
 
 ### Laravel
 
+The service provider and the `Prometheus` facade alias are registered automatically via Laravel package discovery.
+
+If package discovery is disabled in your application, register the provider manually.
 Laravel 11+ register the service provider in `bootstrap/providers.php`:
 ```php
 return [
@@ -86,7 +89,8 @@ $app->router->group(['namespace' => '\BushlanovDev\LaravelPrometheusExporter\Con
 });
 ```
 
-Add middleware to routes. It is advisable to give names to all routes:
+Add middleware to routes. Give names to your routes — the route name is used as the metric
+label, and for unnamed routes the request path becomes the label:
 ```php
 $router->get('/', ['middleware' => 'prometheus', 'as' => 'route_name', function () use ($router) {/*...*/}]);
 ```
@@ -122,10 +126,25 @@ PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS=0
 PROMETHEUS_REDIS_PREFIX=PROMETHEUS_
 ```
 
+Boolean options such as `PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS` and `PROMETHEUS_ROUTE_AUTH_ENABLED`
+accept both `true`/`false` and `1`/`0`.
+
 To customize the configuration file, publish the package configuration using Artisan:
 ```bash
 php artisan vendor:publish --provider="BushlanovDev\LaravelPrometheusExporter\Providers\PrometheusServiceProvider"
 ```
+
+### Collectors
+
+Custom collectors listed in the configuration are registered automatically:
+```php
+'collectors' => [
+    \App\Metrics\UsersCollector::class,
+],
+```
+
+Each collector must implement `BushlanovDev\LaravelPrometheusExporter\CollectorInterface`.
+Collectors are resolved through the service container, so constructor injection is available.
 
 ### Protect metrics endpoint
 

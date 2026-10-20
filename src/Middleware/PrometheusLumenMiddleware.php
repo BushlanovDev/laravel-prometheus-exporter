@@ -4,32 +4,22 @@ declare(strict_types=1);
 
 namespace BushlanovDev\LaravelPrometheusExporter\Middleware;
 
-use Illuminate\Routing\Route;
-use Illuminate\Routing\RouteCollection;
-use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Http\Request;
 
 class PrometheusLumenMiddleware extends PrometheusMiddlewareAbstract
 {
     /**
      * @param Request $request
-     * @return Route
+     *
+     * @return string
      */
-    public function getMatchedRoute(Request $request): Route
+    protected function getRouteLabel(Request $request): string
     {
-        $routeCollection = new RouteCollection();
-        $routes = RouteFacade::getRoutes();
+        $routeInfo = $request->route();
 
-        foreach ($routes as $route) {
-            $routeCollection->add(
-                new Route(
-                    $route['method'],
-                    str_replace(['[', '}]'], ['', '?}'], $route['uri']),
-                    $route['action'],
-                )
-            );
-        }
+        $action = is_array($routeInfo) && is_array($routeInfo[1] ?? null) ? $routeInfo[1] : [];
+        $name = $action['as'] ?? null;
 
-        return $routeCollection->match($request);
+        return is_string($name) ? $name : $request->getPathInfo();
     }
 }

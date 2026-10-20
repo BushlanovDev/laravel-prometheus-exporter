@@ -44,7 +44,7 @@ return [
             'database' => env('PROMETHEUS_REDIS_DATABASE', 0),
             'timeout' => env('PROMETHEUS_REDIS_TIMEOUT', 0.1),
             'read_timeout' => env('PROMETHEUS_REDIS_READ_TIMEOUT', 10),
-            'persistent_connections' => env('PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS', false),
+            'persistent_connections' => filter_var(env('PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS', false), FILTER_VALIDATE_BOOLEAN),
             'prefix' => env('PROMETHEUS_REDIS_PREFIX', 'PROMETHEUS_'),
             'prefix_dynamic' => env('PROMETHEUS_REDIS_PREFIX_DYNAMIC', true),
         ],
@@ -90,7 +90,7 @@ return [
     */
 
     'metrics_route_auth' => [
-        'enabled' => env('PROMETHEUS_ROUTE_AUTH_ENABLED', false),
+        'enabled' => filter_var(env('PROMETHEUS_ROUTE_AUTH_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
         'basic_auth' => [
             'username' => env('PROMETHEUS_ROUTE_AUTH_USERNAME'),
             'password' => env('PROMETHEUS_ROUTE_AUTH_PASSWORD'),

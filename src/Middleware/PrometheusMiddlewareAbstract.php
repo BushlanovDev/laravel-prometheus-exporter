@@ -8,33 +8,37 @@ use Closure;
 use BushlanovDev\LaravelPrometheusExporter\PrometheusExporter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Route;
 
 abstract class PrometheusMiddlewareAbstract
 {
     /**
+     * Return the label of the route matched for the request.
+     *
+     * Typically the route name, with a uri or request path fallback.
+     *
      * @param Request $request
      *
-     * @return Route
+     * @return string
      */
-    abstract public function getMatchedRoute(Request $request): Route;
+    abstract protected function getRouteLabel(Request $request): string;
 
     /**
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
+     *
      * @return Response|\Illuminate\Http\RedirectResponse
      * @throws \Prometheus\Exception\MetricsRegistrationException
      */
     public function handle(Request $request, Closure $next)
     {
-        $matchedRoute = $this->getMatchedRoute($request);
-
         $start = microtime(true);
         /** @var Response $response */
         $response = $next($request);
         $duration = microtime(true) - $start;
+
+        $routeLabel = $this->getRouteLabel($request);
 
         /** @var PrometheusExporter $exporter */
         $exporter = app('prometheus');
@@ -53,7 +57,7 @@ abstract class PrometheusMiddlewareAbstract
             $duration,
             [
                 $request->method(),
-                $matchedRoute->getName() ?? $matchedRoute->uri(),
+                $routeLabel,
                 (string)$response->getStatusCode(),
             ]
         );
@@ -71,7 +75,7 @@ abstract class PrometheusMiddlewareAbstract
         $counter->inc(
             [
                 $request->method(),
-                $matchedRoute->getName() ?? $matchedRoute->uri(),
+                $routeLabel,
                 (string)$response->getStatusCode(),
             ],
         );

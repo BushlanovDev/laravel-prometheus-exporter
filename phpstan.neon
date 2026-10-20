@@ -2,5 +2,4 @@ parameters:
 	level: 8
 	paths:
 		- src
-	ignoreErrors:
-		- '#Argument of an invalid type Illuminate\\Routing\\RouteCollectionInterface supplied for foreach, only iterables are supported\.#'
+	treatPhpDocTypesAsCertain: false
