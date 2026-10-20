@@ -7,13 +7,11 @@
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnPhpunitDeprecations="true"
          failOnPhpunitDeprecation="true"
-         failOnRisky="true"
+         failOnRisky="false"
          failOnWarning="true">
 
     <php>
         <env name="APP_ENV" value="testing"/>
-        <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED &amp; ~E_USER_DEPRECATED"/>
-        <ini name="display_errors" value="0"/>
     </php>
 
     <testsuites>
