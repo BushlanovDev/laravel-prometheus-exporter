@@ -12,6 +12,7 @@
 
     <php>
         <env name="APP_ENV" value="testing"/>
+        <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED &amp; ~E_USER_DEPRECATED"/>
     </php>
 
     <testsuites>
